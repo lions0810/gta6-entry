@@ -1,12 +1,13 @@
 // Sunset Bay — an original top-down 2D open-world crime game.
-// All tuning numbers, colours and the story in one place. The world is a fixed-size
-// city (3200x2400); the camera follows the player and the renderer scales to the window.
+// One place for every tuning number, colour and story beat. The city is a fixed
+// 3200x2400 map; the camera follows the player and the renderer scales the view
+// to whatever window it runs in.
 export const WORLD = { width: 3200, height: 2400 };
 export const VIEW = { width: 1280, height: 720 };
 export const STEP = 1 / 60;
 
-// Road grid: roads are centred on these lines, ROAD_W wide. Blocks sit between them.
-// The bay runs along the south edge, below BAY_Y.
+// Roads are centred on these lines and ROAD_W wide; blocks fill the gaps between
+// them. The bay sits along the south edge, below BAY_Y.
 export const ROAD_W = 96;
 export const ROAD_X = [200, 600, 1000, 1400, 1800, 2200, 2600, 3000];
 export const ROAD_Y = [200, 600, 1000, 1400, 1800, 2200];
@@ -45,7 +46,7 @@ export const BUST_TIME = 0.6;
 
 export const SAVE_KEY = 'sunset-bay.save.v1';
 
-// Story: five missions, each a waypoint objective with dialogue and a cash payout.
+// The story: five missions, each a waypoint objective with dialogue and a payout.
 export const MISSIONS = [
   {
     id: 0, title: 'Wheels Up', payout: 500,

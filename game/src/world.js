@@ -167,9 +167,7 @@ export function createWorld(seed) {
         ? ROAD_X[Math.floor(random() * ROAD_X.length)]
         : ROAD_Y[Math.floor(random() * ROAD_Y.length)];
       const dir = random() < 0.5 ? 1 : -1;
-      const along = vertical
-        ? 240 + random() * 1900
-        : 240 + random() * 1900;
+      const along = 240 + random() * 1900;
       state.traffic.push({
         x: vertical ? line + dir * 22 : along,
         y: vertical ? along : line + dir * 22,
@@ -224,6 +222,9 @@ export function createWorld(seed) {
   function startMission(index) {
     if (index >= MISSIONS.length) return;
     const mission = MISSIONS[index];
+    // grab-and-go missions start in the "grab" phase; everything else in "go".
+    // (This phase matters: without it the final mission would complete the moment
+    // it started, because the hideout check would run before the grab.)
     state.missionPhase = mission.kind === 'grab-and-go' ? 'grab' : 'go';
     state.dialogue = { text: mission.briefing, t: 7 };
     if (mission.wantedOnStart) {
@@ -432,6 +433,13 @@ export function createWorld(seed) {
       const target = angleTo(cop.x, cop.y, p.x, p.y);
       cop.angle = turnToward(cop.angle, target, 3.4 * dt);
       cop.speed = Math.min(CAR.policeMaxSpeed, cop.speed + 420 * dt);
+      // A cruiser closing in on a player on foot brakes to a crawl: at full speed
+      // it would blast through the bust radius in a frame or two and orbit forever
+      // without ever catching anyone. At 90 it stays inside the radius long enough
+      // for the bust timer to fill. (Ramming a car is unaffected.)
+      if (!p.inCar && dist(cop.x, cop.y, p.x, p.y) < 140) {
+        cop.speed = Math.min(cop.speed, 90);
+      }
       cop.x += Math.cos(cop.angle) * cop.speed * dt;
       cop.y += Math.sin(cop.angle) * cop.speed * dt;
       cop.x = clamp(cop.x, 60, WORLD.width - 60);
@@ -483,7 +491,6 @@ export function createWorld(seed) {
   }
 
   function stepBullets(dt) {
-    let events = 0;
     for (const b of state.bullets) {
       b.x += b.vx * dt;
       b.y += b.vy * dt;
@@ -533,7 +540,6 @@ export function createWorld(seed) {
       b.dead = dead;
     }
     state.bullets = state.bullets.filter((b) => !b.dead);
-    return events;
   }
 
   function stepPickups(dt) {
@@ -560,7 +566,6 @@ export function createWorld(seed) {
     if (state.missionIndex >= MISSIONS.length || state.endKind) return 0;
     const mission = MISSIONS[state.missionIndex];
     const p = state.player;
-    const marker = missionMarker();
     if (mission.kind === 'drive-to') {
       if (p.inCar && dist(p.x, p.y, mission.marker.x, mission.marker.y) < 120) return completeMission();
     } else if (mission.kind === 'pickup') {
@@ -612,7 +617,7 @@ export function createWorld(seed) {
       events |= stepPolice(dt);
       if (state.endKind) return events;
       stepRivals(dt);
-      events |= stepBullets(dt);
+      stepBullets(dt);
       events |= stepPickups(dt);
 
       const move = input?.move ?? { x: 0, y: 0 };

@@ -1,7 +1,8 @@
-// All sound is synthesized with WebAudio: no audio files, no network. The engine is
-// a low oscillator whose pitch follows driving speed, the siren is two alternating
-// tones, and the rest are short envelopes. Everything is guarded: if the browser
-// blocks audio until a gesture, the sounds simply start after the first key press.
+// Every sound is synthesized with WebAudio — no audio files, no network. The
+// engine is a low oscillator whose pitch follows driving speed, the siren is two
+// alternating tones, and the rest are short envelopes. All of it is guarded: if
+// the browser blocks audio until a gesture, sounds simply start after the first
+// key press, and nothing here can ever break the game.
 export function createAudio() {
   let context = null;
   let master = null;
@@ -10,7 +11,6 @@ export function createAudio() {
   let engineGain = null;
   let sirenTimer = 0;
   let sirenHigh = false;
-  let sirenOn = false;
 
   function ensure() {
     if (context) return true;
@@ -153,11 +153,8 @@ export function createAudio() {
         if (sirenTimer <= 0) {
           sirenTimer = 0.42;
           sirenHigh = !sirenHigh;
-          sirenOn = true;
           tone(sirenHigh ? 880 : 660, 0.4, 'sine', 0.07);
         }
-      } else {
-        sirenOn = false;
       }
     },
   };
