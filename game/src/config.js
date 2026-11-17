@@ -1,37 +1,47 @@
 // Sunset Bay — an original top-down 2D open-world crime game.
-// All tuning numbers and colours in one place. The world is a fixed-size city
-// (3200x2400); the camera follows the player and the renderer scales to the window.
-
+// All tuning numbers, colours and the story in one place. The world is a fixed-size
+// city (3200x2400); the camera follows the player and the renderer scales to the window.
 export const WORLD = { width: 3200, height: 2400 };
 export const VIEW = { width: 1280, height: 720 };
 export const STEP = 1 / 60;
 
 // Road grid: roads are centred on these lines, ROAD_W wide. Blocks sit between them.
+// The bay runs along the south edge, below BAY_Y.
 export const ROAD_W = 96;
 export const ROAD_X = [200, 600, 1000, 1400, 1800, 2200, 2600, 3000];
 export const ROAD_Y = [200, 600, 1000, 1400, 1800, 2200];
+export const BAY_Y = 2320;
+export const SIDEWALK = 22;
 
 export const PLAYER = {
   radius: 13,
   walkSpeed: 230,
   health: 100,
   punchDamage: 25,
-  punchRange: 34,
+  punchRange: 36,
   punchCooldown: 0.35,
+  enterRange: 78,
 };
 
 export const CAR = {
   length: 54,
   width: 26,
   accel: 420,
-  brake: 700,
+  brake: 720,
   maxSpeed: 460,
   reverseMax: 160,
-  steer: 2.6,
-  drag: 0.6,
+  steer: 2.7,
+  drag: 0.55,
+  policeMaxSpeed: 500,
+  trafficSpeed: 150,
 };
 
-export const PISTOL = { damage: 34, bulletSpeed: 720, cooldown: 0.22, range: 520 };
+export const PISTOL = { damage: 34, bulletSpeed: 720, cooldown: 0.22, range: 560 };
+export const RIVAL = { health: 100, damage: 8, shootCooldown: 1.3, sightRange: 430 };
+
+export const WANTED_MAX = 5;
+export const WANTED_DECAY_SECONDS = 25;
+export const BUST_TIME = 0.6;
 
 export const SAVE_KEY = 'sunset-bay.save.v1';
 
@@ -78,33 +88,37 @@ export const MISSIONS = [
 ];
 
 export const PALETTE = {
-  backdrop: '#0d1117',
-  grass: '#2e4d2a',
-  block: '#3a3f46',
-  sidewalk: '#6b7280',
-  road: '#23262b',
-  roadLine: '#c9a227',
-  buildingA: '#7a6a58',
-  buildingB: '#5b6b7a',
-  buildingC: '#6e5a6e',
-  buildingD: '#4f6152',
-  roof: '#2b2f36',
-  window: '#ffd866',
-  tree: '#2f7a33',
-  water: '#1d4e6b',
-  player: '#f2c94c',
-  playerDark: '#8a6d1a',
-  pedShirt: ['#e5534b', '#4fc3f7', '#9b7ede', '#f28c4b', '#7ee081'],
-  cop: '#2f6fd0',
-  copCar: '#2f6fd0',
-  trafficCar: ['#c0392b', '#7f8c8d', '#d4d4d4', '#8e44ad', '#16a085', '#e67e22'],
+  backdrop: '#0d0f14',
+  ground: '#2e3238',
+  block: '#34383f',
+  road: '#1d2026',
+  roadLine: '#8a8f3c',
+  sidewalk: '#454a52',
+  bay: '#16324a',
+  bayDeep: '#0f2436',
+  building: ['#4a4f58', '#5a5148', '#47525c', '#54444a', '#3f4a3a'],
+  buildingRoof: ['#5d636e', '#6b6156', '#57646f', '#65545b', '#4d5a48'],
+  tree: '#2f6b3a',
+  treeDark: '#255430',
+  lamp: '#d8c56a',
+  player: '#e8b13c',
+  playerDark: '#8a6a1d',
+  ped: ['#c96a5a', '#5a8ac9', '#7ac96a', '#c9a45a', '#9a6ac9'],
+  rival: '#d43a2e',
+  police: '#e8e8e8',
+  policeDark: '#20242c',
+  car: ['#b8442e', '#2e6db8', '#c9a13a', '#3a9e6a', '#7a4fb8', '#c96a2e', '#4fa8b8'],
+  pickupHealth: '#3ec95a',
+  pickupAmmo: '#e8c93a',
+  pickupCash: '#4fd66a',
+  marker: '#ffd94a',
   text: '#eef1f5',
-  muted: '#9aa3b2',
-  gold: '#f2c94c',
-  red: '#e5534b',
-  green: '#58c96b',
-  hud: 'rgba(10, 14, 20, 0.72)',
-  minimap: 'rgba(10, 14, 20, 0.78)',
+  muted: '#9aa1ad',
+  panel: 'rgba(12, 14, 18, 0.82)',
+  health: '#3ec95a',
+  healthLow: '#e84a3a',
+  star: '#ffd94a',
+  starEmpty: '#5a5f6a',
 };
 
 export const FONT = 'system-ui, -apple-system, "Segoe UI", sans-serif';
